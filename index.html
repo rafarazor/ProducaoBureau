@@ -29,6 +29,9 @@
             color: #333;
             text-align: center;
         }
+        [data-theme="dark"] h1 {
+            color: #fff;
+        }
         form {
             display: flex;
             flex-direction: column;
@@ -327,13 +330,12 @@
             margin: 0;
         }
 
-        @media (max-width: 1024px) {
-            .screen-container {
-                flex-direction: column;
-            }
-            .preview-container {
-                position: static;
-            }
+        #shareWhatsApp {
+            background-color: #25D366; /* WhatsApp green */
+        }
+
+        #shareWhatsApp:hover {
+            background-color: #128C7E;
         }
     </style>
 </head>
@@ -430,10 +432,9 @@
                 <h2>Visualização do Relatório</h2>
                 <textarea id="preview-editor" class="preview-editor" placeholder="O relatório será exibido aqui conforme você adiciona informações..."></textarea>
                 <div class="preview-actions">
-                    <button id="updatePreview">Atualizar Relatório</button>
-                    <button id="revertChanges">Reverter Alterações</button>
                     <button id="selectPreviewText">Selecionar Texto</button>
                     <button id="copyPreviewText">Copiar Texto</button>
+                    <button id="shareWhatsApp">Compartilhar no WhatsApp</button>
                 </div>
             </div>
         </div>
@@ -587,6 +588,7 @@
                     <option value="100x30">100x30</option>
                     <option value="44x19">44x19</option>
                     <option value="45x20">45x20</option>
+                    <option value="45x65">45x65</option>
                 `;
             } else if (this.value === 'Zema') {
                 // Specific material for Zema
@@ -655,6 +657,7 @@
                     <option value="100x30">100x30</option>
                     <option value="44x19">44x19</option>
                     <option value="45x20">45x20</option>
+                    <option value="45x65">45x65</option>
                 `;
             } else if (cliente === 'Zema') {
                 materialOptions = `
@@ -709,7 +712,7 @@
         });
 
         let clientes = ['Pernambucanas', 'Riachuelo', 'Centauro', 'Zema', 'FALCON 83X39', 'Pimatag'];
-        let materiais = ['44x19', '45x20', '100x30', '74x20', '110x44', '45x65 clç', '45x65 cmb', '44x164', '50x42', '50x65', '65x23', '65x25', '64x7', 'Etiquetas Singularizadas'];
+        let materiais = ['44x19', '45x20', '100x30', '74x20', '110x44', '45x65 clç', '45x65 cmb', '44x164', '50x42', '50x65', '65x23', '65x25', '64x7', '68x22', '31x13', 'Etiquetas Singularizadas'];
 
         const modal = document.getElementById('gerenciarModal');
         const gerenciarBtn = document.getElementById('gerenciarBtn');
@@ -982,16 +985,6 @@
         });
 
         // Preview action buttons
-        document.getElementById('updatePreview').addEventListener('click', function() {
-            const previewText = document.getElementById('preview-editor').value;
-            document.getElementById('resultado').textContent = previewText;
-            lastGeneratedText = previewText;
-        });
-
-        document.getElementById('revertChanges').addEventListener('click', function() {
-            document.getElementById('preview-editor').value = lastGeneratedText;
-        });
-
         document.getElementById('selectPreviewText').addEventListener('click', function() {
             const previewEditor = document.getElementById('preview-editor');
             previewEditor.select();
@@ -1011,6 +1004,11 @@
                     this.textContent = 'Copiar Texto';
                 }, 2000);
             });
+        });
+
+        document.getElementById('shareWhatsApp').addEventListener('click', function() {
+            const previewText = encodeURIComponent(document.getElementById('preview-editor').value);
+            window.open(`https://wa.me/?text=${previewText}`, '_blank');
         });
 
         // Initialize preview on page load
