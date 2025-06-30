@@ -3,7 +3,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aplicativo de Produção Diária</title>
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#4CAF50">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -521,7 +521,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js')
+                navigator.serviceWorker.register('/service-worker.js')
                     .then(registration => {
                         console.log('ServiceWorker registration successful');
                     })
@@ -628,20 +628,19 @@
             let materialOptions = '';
             
             if (this.value === 'Riachuelo') {
-    materialOptions = `
-        <option value="">Selecione o material</option>
-        <option value="100x30">100x30</option>
-        <option value="44x19">44x19</option>
-        <option value="45x20">45x20</option>
-        <option value="45x65">45x65</option>
-        <option value="45x65 Swift NY">45x65 Swift NY</option>
-        <option value="CAMEBA PINADA 45x65">CAMEBA PINADA 45x65</option>
-        <option value="45x8 Ferrowave">45x8 Ferrowave</option>
-        <option value="64x7 Twin">64x7 Twin</option>
-        <option value="31x13">31x13</option>
-    `;
-}
-
+                // Specific materials for Riachuelo
+                materialOptions = `
+                    <option value="">Selecione o material</option>
+                    <option value="100x30">100x30</option>
+                    <option value="44x19">44x19</option>
+                    <option value="45x20">45x20</option>
+                    <option value="45x65">45x65</option>
+                    <option value="45x65 Swift NY">45x65 Swift NY</option>
+                    <option value="CAMEBA PINADA 45x65">CAMEBA PINADA 45x65</option>
+                    <option value="45x8 Ferrowave">45x8 Ferrowave</option>
+                    <option value="64x7 Twin">64x7 Twin</option>
+                    <option value="31x13">31x13</option>
+                `;
             } else if (this.value === 'Zema') {
                 // Specific material for Zema
                 materialOptions = `
@@ -710,6 +709,11 @@
                     <option value="44x19">44x19</option>
                     <option value="45x20">45x20</option>
                     <option value="45x65">45x65</option>
+                    <option value="45x65 Swift NY">45x65 Swift NY</option>
+                    <option value="CAMEBA PINADA 45x65">CAMEBA PINADA 45x65</option>
+                    <option value="45x8 Ferrowave">45x8 Ferrowave</option>
+                    <option value="64x7 Twin">64x7 Twin</option>
+                    <option value="31x13">31x13</option>
                 `;
             } else if (cliente === 'Zema') {
                 materialOptions = `
