@@ -404,8 +404,7 @@
         <div class="form-container">
             <div class="container">
                 <h1>Produção Bureau</h1>
-                <button id="gerenciarBtn">Gerenciar Clientes e Materiais</button>
-                <button id="resetBtn">Resetar Formulário</button>
+                <button id="resetBtn" style="padding: 8px 15px; font-size: 14px;">Resetar Formulário</button>
                 <form id="formProducao">
                     <label for="data">Data:</label>
                     <input type="date" id="data" required>
@@ -427,7 +426,9 @@
                         <option value="Zema">Zema</option>
                         <option value="FALCON 83X39">FALCON 83X39</option>
                         <option value="Pimatag">Pimatag</option>
+                        <option value="outro">Outro cliente</option>
                     </select>
+                    <input type="text" id="outroCliente" style="display: none; margin-top: 10px;" placeholder="Digite o nome do cliente">
 
                     <div id="materiaisContainer">
                         <div class="material-item">
@@ -457,6 +458,7 @@
                     <button type="button" id="adicionarMaterial">Adicionar Material</button>
                     <button type="button" id="finalizarCliente">Finalizar Cliente</button>
 
+                    <h3 style="margin-top: 20px; margin-bottom: 10px;">Problemas frequentes:</h3>
                     <div class="observacoes-rapidas">
                         <button type="button" class="observacao-btn">Material com excesso de void</button>
                         <button type="button" class="observacao-btn">Material com excesso de cola</button>
@@ -491,30 +493,6 @@
                     <button id="copyPreviewText">Copiar Texto</button>
                     <button id="shareWhatsApp">Compartilhar no WhatsApp</button>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="gerenciarModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Gerenciar Clientes e Materiais</h2>
-            <div>
-                <h3>Adicionar Cliente</h3>
-                <div class="input-group">
-                    <input type="text" id="novoCliente" placeholder="Nome do cliente">
-                    <button onclick="adicionarCliente()">Adicionar</button>
-                </div>
-                <div class="lista-items" id="listaClientes"></div>
-            </div>
-
-            <div style="margin-top: 30px;">
-                <h3>Adicionar Material</h3>
-                <div class="input-group">
-                    <input type="text" id="novoMaterial" placeholder="Código do material">
-                    <button onclick="adicionarMaterial()">Adicionar</button>
-                </div>
-                <div class="lista-items" id="listaMateriais"></div>
             </div>
         </div>
     </div>
@@ -626,7 +604,20 @@
 
         document.getElementById('cliente').addEventListener('change', function() {
             const materiaisContainer = document.getElementById('materiaisContainer');
+            const outroClienteInput = document.getElementById('outroCliente');
             let materialOptions = '';
+            
+            // Show/hide the custom client input field
+            if (this.value === 'outro') {
+                outroClienteInput.style.display = 'block';
+                outroClienteInput.required = true;
+                this.required = false;
+            } else {
+                outroClienteInput.style.display = 'none';
+                outroClienteInput.required = false;
+                outroClienteInput.value = '';
+                this.required = true;
+            }
             
             if (this.value === 'Riachuelo') {
                 // Specific materials for Riachuelo
@@ -700,6 +691,7 @@
         document.getElementById('adicionarMaterial').addEventListener('click', function() {
             const materiaisContainer = document.getElementById('materiaisContainer');
             const cliente = document.getElementById('cliente').value;
+            const outroClienteInput = document.getElementById('outroCliente');
             const novoMaterial = document.createElement('div');
             novoMaterial.className = 'material-item';
             
@@ -770,114 +762,14 @@
             }
         });
 
-        let clientes = ['Pernambucanas', 'Riachuelo', 'Centauro', 'Zema', 'FALCON 83X39', 'Pimatag'];
-        let materiais = ['44x19', '45x20', '100x30', '74x20', '110x44', '45x65 clç', '45x65 cmb', '44x164', '50x42', '50x65', '65x23', '65x25', '64x7', '68x22', '31x13', 'Etiquetas Singularizadas'];
-
-        const modal = document.getElementById('gerenciarModal');
-        const gerenciarBtn = document.getElementById('gerenciarBtn');
-        const closeBtn = document.getElementsByClassName('close')[0];
-
-        gerenciarBtn.onclick = function() {
-            atualizarListas();
-            modal.style.display = "block";
-        }
-
-        closeBtn.onclick = function() {
-            modal.style.display = "none";
-        }
-
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-
-        function atualizarListas() {
-            const listaClientes = document.getElementById('listaClientes');
-            listaClientes.innerHTML = '';
-            clientes.forEach(cliente => {
-                const div = document.createElement('div');
-                div.className = 'lista-item';
-                div.innerHTML = `
-                    <span>${cliente}</span>
-                    <span class="excluir-item" onclick="excluirCliente('${cliente}')">❌</span>
-                `;
-                listaClientes.appendChild(div);
-            });
-
-            const listaMateriais = document.getElementById('listaMateriais');
-            listaMateriais.innerHTML = '';
-            materiais.forEach(material => {
-                const div = document.createElement('div');
-                div.className = 'lista-item';
-                div.innerHTML = `
-                    <span>${material}</span>
-                    <span class="excluir-item" onclick="excluirMaterial('${material}')">❌</span>
-                `;
-                listaMateriais.appendChild(div);
-            });
-
-            atualizarSelects();
-        }
-
-        function atualizarSelects() {
-            const clienteSelect = document.getElementById('cliente');
-            clienteSelect.innerHTML = '<option value="">Selecione o cliente</option>';
-            clientes.forEach(cliente => {
-                const option = document.createElement('option');
-                option.value = cliente;
-                option.textContent = cliente;
-                clienteSelect.appendChild(option);
-            });
-
-            const materiaisSelects = document.querySelectorAll('.material');
-            materiaisSelects.forEach(select => {
-                const valorAtual = select.value;
-                select.innerHTML = '<option value="">Selecione o material</option>';
-                materiais.forEach(material => {
-                    const option = document.createElement('option');
-                    option.value = material;
-                    option.textContent = material;
-                    select.appendChild(option);
-                });
-                select.value = valorAtual;
-            });
-        }
-
-        function adicionarCliente() {
-            const input = document.getElementById('novoCliente');
-            const cliente = input.value.trim();
-            if (cliente && !clientes.includes(cliente)) {
-                clientes.push(cliente);
-                input.value = '';
-                atualizarListas();
-            }
-        }
-
-        function adicionarMaterial() {
-            const input = document.getElementById('novoMaterial');
-            const material = input.value.trim();
-            if (material && !materiais.includes(material)) {
-                materiais.push(material);
-                input.value = '';
-                atualizarListas();
-            }
-        }
-
-        function excluirCliente(cliente) {
-            clientes = clientes.filter(c => c !== cliente);
-            atualizarListas();
-        }
-
-        function excluirMaterial(material) {
-            materiais = materiais.filter(m => m !== material);
-            atualizarListas();
-        }
-
         document.getElementById('finalizarCliente').addEventListener('click', function() {
-            const cliente = document.getElementById('cliente').value;
-            if (!cliente) {
-                alert('Por favor selecione um cliente');
+            let cliente = document.getElementById('cliente').value;
+            if (cliente === 'outro') {
+                cliente = document.getElementById('outroCliente').value.trim();
+            }
+            
+            if (!cliente || (cliente === 'outro' && !document.getElementById('outroCliente').value.trim())) {
+                alert('Por favor selecione ou digite um cliente');
                 return;
             }
 
@@ -904,6 +796,9 @@
             });
 
             document.getElementById('cliente').value = '';
+            document.getElementById('outroCliente').style.display = 'none';
+            document.getElementById('outroCliente').value = '';
+            
             document.querySelectorAll('.material-item').forEach(item => {
                 item.querySelector('.material').value = '';
                 item.querySelector('.quantidade').value = '';
@@ -1037,11 +932,6 @@
         // Update preview when form elements change
         ['data', 'turno', 'observacao'].forEach(id => {
             document.getElementById(id).addEventListener('change', updatePreviewText);
-        });
-
-        // Update preview when client is finalized
-        document.getElementById('finalizarCliente').addEventListener('click', function() {
-            updatePreviewText();
         });
 
         // Preview action buttons
